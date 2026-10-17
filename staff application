@@ -1,0 +1,46 @@
+package main
+
+import (
+	"fmt"
+	"github.com/bwmarrin/discordgo"
+)
+
+const ReviewChannelID = "123456789012345678" // Your Staff Review Channel ID
+
+func handleInteraction(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	// Handle Apply Now Button Click
+	if i.Type == discordgo.InteractionMessageComponent && i.MessageComponentData().CustomID == "open_staff_app" {
+		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseModal,
+			Data: &discordgo.InteractionResponseData{
+				CustomID: "staff_app_modal",
+				Title:    "Staff Application",
+				Components: []discordgo.MessageComponent{
+					discordgo.ActionsRow{
+						Components: []discordgo.MessageComponent{
+							discordgo.TextInput{
+								CustomID:    "app_age",
+								Label:       "How old are you?",
+								Style:       discordgo.TextInputShort,
+								Required:    true,
+							},
+						},
+					},
+					discordgo.ActionsRow{
+						Components: []discordgo.MessageComponent{
+							discordgo.TextInput{
+								CustomID:    "app_why",
+								Label:       "Why do you want to join our staff team?",
+								Style:       discordgo.TextInputParagraph,
+								Required:    true,
+							},
+						},
+					},
+				},
+			},
+		})
+		if err != nil {
+			fmt.Println("Error opening modal:", err)
+		}
+	}
+}
